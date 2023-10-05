@@ -27,7 +27,10 @@ type ServerConfig struct {
 
 func NewPostgresServerConfig(loadEnv bool) (*ServerConfig, error) {
 	if loadEnv {
-		godotenv.Load(".env")
+		err := godotenv.Load(".env")
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	tokenExpiration, err := strconv.Atoi(os.Getenv("TOKEN_EXPIRATION_HRS"))
