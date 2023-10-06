@@ -25,7 +25,7 @@ type ServerConfig struct {
 	Db DBInitializer
 }
 
-func NewPostgresServerConfig(loadEnv bool) (*ServerConfig, error) {
+func NewServerConfig(loadEnv bool, dbInitializer DBInitializer) (*ServerConfig, error) {
 	if loadEnv {
 		err := godotenv.Load(".env")
 		if err != nil {
@@ -45,13 +45,42 @@ func NewPostgresServerConfig(loadEnv bool) (*ServerConfig, error) {
 		SMTPPassword:    os.Getenv("SMTP_PASSWORD"),
 		TokenSecret:     os.Getenv("TOKEN_SECRET"),
 		TokenExpiration: tokenExpiration,
-		Db: &dbs.PostgresInitializer{
-			Host:     os.Getenv("PGHOST"),
-			Port:     os.Getenv("PGPORT"),
-			DbName:   os.Getenv("PGDATABASE"),
-			Username: os.Getenv("PGUSER"),
-			Password: os.Getenv("PGPASSWORD"),
-			LogLevel: logger.Info,
-		},
+		Db:              dbInitializer,
 	}, nil
+}
+
+func NewPostgresServerConfig(loadEnv bool) (*ServerConfig, error) {
+	if loadEnv {
+		err := godotenv.Load(".env")
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	dbInitializer := &dbs.PostgresInitializer{
+		Host:     os.Getenv("POSTGRES_HOST"),
+		Port:     os.Getenv("POSTGRES_PORT"),
+		DbName:   os.Getenv("POSTGRES_DB"),
+		Username: os.Getenv("POSTGRES_USER"),
+		Password: os.Getenv("POSTGRES_PASSWORD"),
+		LogLevel: logger.Info,
+	}
+
+	return NewServerConfig(loadEnv, dbInitializer)
+}
+
+func NewSqliteServerConfig(loadEnv bool) (*ServerConfig, error) {
+	if loadEnv {
+		err := godotenv.Load(".env")
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	dbInitializer := &dbs.SqliteInitializer{
+		DBPath:   "DB_PATH",
+		LogLevel: logger.Info,
+	}
+
+	return NewServerConfig(loadEnv, dbInitializer)
 }
