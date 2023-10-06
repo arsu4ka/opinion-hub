@@ -27,16 +27,7 @@ func (p *PostgresInitializer) GetDB() (*gorm.DB, error) {
 		p.Password,
 	)
 
-	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{
+	return gorm.Open(postgres.Open(connectionString), &gorm.Config{
 		Logger: logger.Default.LogMode(p.LogLevel),
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	if err = db.AutoMigrate(); err != nil {
-		return nil, err
-	}
-
-	return db, nil
 }
