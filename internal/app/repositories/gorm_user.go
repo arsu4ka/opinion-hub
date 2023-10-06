@@ -9,13 +9,13 @@ type GormUserRepository struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) *GormUserRepository {
+func NewGormUserRepository(db *gorm.DB) *GormUserRepository {
 	return &GormUserRepository{
 		db: db,
 	}
 }
 
-func (us *GormUserRepository) FindById(id uint) (*models.User, error) {
+func (us *GormUserRepository) FindByID(id uint) (*models.User, error) {
 	user := models.User{ID: id}
 	result := us.db.First(&user)
 	return &user, result.Error

@@ -10,13 +10,13 @@ type GormOpinionRepository struct {
 	db *gorm.DB
 }
 
-func NewOpinionRepository(db *gorm.DB) *GormOpinionRepository {
+func NewGormOpinionRepository(db *gorm.DB) *GormOpinionRepository {
 	return &GormOpinionRepository{
 		db: db,
 	}
 }
 
-func (os *GormOpinionRepository) FindById(id uuid.UUID) (*models.Opinion, error) {
+func (os *GormOpinionRepository) FindByID(id uuid.UUID) (*models.Opinion, error) {
 	opinion := models.Opinion{ID: id}
 	result := os.db.First(&opinion)
 	return &opinion, result.Error
