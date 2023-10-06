@@ -16,14 +16,6 @@ type Like struct {
 	Opinion   Opinion `gorm:"foreignKey:OpinionID"`
 }
 
-func NewLike(userID uint, opinionID uuid.UUID) *Like {
-	return &Like{
-		ID:        uuid.New(),
-		UserID:    userID,
-		OpinionID: opinionID,
-	}
-}
-
 func (l *Like) Validate() error {
 	if l.ID == uuid.Nil {
 		return errors.New("like id is required")
@@ -32,6 +24,10 @@ func (l *Like) Validate() error {
 }
 
 func (l *Like) BeforeCreate(tx *gorm.DB) (err error) {
+	if l.ID == uuid.Nil {
+		l.ID = uuid.New()
+	}
+
 	opinion := &Opinion{ID: l.OpinionID}
 	if err := tx.First(opinion).Error; err != nil {
 		return err
