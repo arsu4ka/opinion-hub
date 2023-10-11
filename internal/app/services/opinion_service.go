@@ -18,8 +18,8 @@ func (os *OpinionService) FindByID(id uuid.UUID) (*models.Opinion, error) {
 	return os.repo.FindByID(id)
 }
 
-func (os *OpinionService) FindByUserID(userID uint) ([]*models.Opinion, error) {
-	return os.repo.FindByUserID(userID)
+func (os *OpinionService) FindByUserID(userID uint, withDrafts bool) ([]*models.Opinion, error) {
+	return os.repo.FindByUserID(userID, withDrafts)
 }
 
 func (os *OpinionService) Create(opinion *models.Opinion) error {

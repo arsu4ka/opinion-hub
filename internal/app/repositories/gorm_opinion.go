@@ -17,14 +17,18 @@ func NewGormOpinionRepository(db *gorm.DB) *GormOpinionRepository {
 }
 
 func (os *GormOpinionRepository) FindByID(id uuid.UUID) (*models.Opinion, error) {
-	opinion := models.Opinion{ID: id}
-	result := os.db.First(&opinion)
+	var opinion models.Opinion
+	result := os.db.Where("id = ?", id).First(&opinion)
 	return &opinion, result.Error
 }
 
-func (os *GormOpinionRepository) FindByUserID(userID uuid.UUID) ([]*models.Opinion, error) {
+func (os *GormOpinionRepository) FindByUserID(userID uint, withDrafts bool) ([]*models.Opinion, error) {
 	var opinions []*models.Opinion
-	result := os.db.Where("user_id = ?", userID).Find(&opinions)
+	query := "owner_id = ?"
+	if !withDrafts {
+		query = "owner_id = ? AND is_draft = false"
+	}
+	result := os.db.Where(query, userID).Find(&opinions)
 	return opinions, result.Error
 }
 
@@ -37,5 +41,5 @@ func (os *GormOpinionRepository) Update(opinion *models.Opinion) error {
 }
 
 func (os *GormOpinionRepository) Delete(id uuid.UUID) error {
-	return os.db.Delete(&models.Opinion{ID: id}).Error
+	return os.db.Delete(&models.Opinion{}, id).Error
 }
