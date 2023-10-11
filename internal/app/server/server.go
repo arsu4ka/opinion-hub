@@ -41,6 +41,7 @@ func (s *Server) init(db *gorm.DB) {
 	userGroup := s.e.Group("/users")
 	userGroup.GET("/:username", userController.GetUser())
 	userGroup.GET("/:username/opinions", userController.GetOpinions())
+	userGroup.PUT("/:username", userController.UpdateUser())
 }
 
 func (s *Server) Start() error {
