@@ -5,19 +5,8 @@ import (
 
 	"gorm.io/gorm"
 
-	validation "github.com/go-ozzo/ozzo-validation"
-	"github.com/go-ozzo/ozzo-validation/is"
 	"golang.org/x/crypto/bcrypt"
 )
-
-func getPasswordValidator(isHashed bool) func(string) bool {
-	return func(password string) bool {
-		if isHashed {
-			return true
-		}
-		return len(password) >= 6 && len(password) <= 30
-	}
-}
 
 type User struct {
 	ID        uint
@@ -38,21 +27,6 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 
 func (u *User) SetHashed() {
 	u.isHashedPassword = true
-}
-
-func (u *User) Validate() error {
-	return validation.ValidateStruct(
-		u,
-		validation.Field(&u.Email, validation.Required, is.Email),
-		validation.Field(&u.Username, validation.Required, is.Alphanumeric),
-		validation.Field(&u.Password, validation.Required, validation.NewStringRule(
-			getPasswordValidator(u.isHashedPassword),
-			"invalid password",
-		)),
-		validation.Field(&u.FirstName, validation.Required),
-		validation.Field(&u.LastName),
-		validation.Field(&u.IsPublic, validation.Required),
-	)
 }
 
 func (u *User) HashPassword() error {

@@ -34,16 +34,11 @@ func (ac *AuthController) Register() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		user := createUserDto.ToModel()
-		if err := user.HashPassword(); err != nil {
+		if err := ac.user.Create(&createUserDto); err != nil {
 			return err
 		}
 
-		if err := ac.user.Create(user); err != nil {
-			return err
-		}
-
-		return c.JSON(http.StatusCreated, dto.NewResponseUserDto(user))
+		return c.JSON(http.StatusCreated, nil)
 	}
 }
 

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/aru4ka/opinion-hub/internal/app/controllers/dto"
 	"github.com/aru4ka/opinion-hub/internal/app/models"
 	"github.com/aru4ka/opinion-hub/internal/app/repositories"
 )
@@ -27,19 +28,13 @@ func (us *UserService) FindByUsername(username string) (*models.User, error) {
 	return us.repo.FindByUsername(username)
 }
 
-func (us *UserService) Create(user *models.User) error {
-	if err := user.Validate(); err != nil {
-		return err
-	}
-
+func (us *UserService) Create(userDto *dto.CreateUserDto) error {
+	user := userDto.ToModel()
 	return us.repo.Create(user)
 }
 
-func (us *UserService) Update(user *models.User) error {
-	if err := user.Validate(); err != nil {
-		return err
-	}
-
+func (us *UserService) Update(userDto *dto.UpdateUserDto) error {
+	user := userDto.ToModel()
 	return us.repo.Update(user)
 }
 
