@@ -2,7 +2,6 @@ package dto
 
 import (
 	"github.com/aru4ka/opinion-hub/internal/app/models"
-	"time"
 )
 
 type CreateUserDto struct {
@@ -29,13 +28,17 @@ type UpdateUserDto struct {
 	CreateUserDto
 }
 
+type LoginUserDto struct {
+	Email    string `json:"email" xml:"email" validate:"required,email"`
+	Password string `json:"password" xml:"password" validate:"required,min=6,max=30"`
+}
+
 type ResponseUserDto struct {
-	FirstName string    `json:"firstName" xml:"firstName"`
-	LastName  string    `json:"lastName" xml:"lastName"`
-	Username  string    `json:"username" xml:"username"`
-	Email     string    `json:"email" xml:"email"`
-	IsPublic  bool      `json:"isPublic" xml:"isPublic"`
-	CreatedAt time.Time `json:"createdAt"`
+	FirstName string `json:"firstName" xml:"firstName"`
+	LastName  string `json:"lastName" xml:"lastName"`
+	Username  string `json:"username" xml:"username"`
+	Email     string `json:"email" xml:"email"`
+	IsPublic  bool   `json:"isPublic" xml:"isPublic"`
 }
 
 func NewResponseUserDto(user *models.User) *ResponseUserDto {
@@ -45,6 +48,14 @@ func NewResponseUserDto(user *models.User) *ResponseUserDto {
 		Username:  user.Username,
 		Email:     user.Email,
 		IsPublic:  user.IsPublic,
-		CreatedAt: user.CreatedAt,
+	}
+}
+
+func (r *ResponseUserDto) HideEmail() *ResponseUserDto {
+	return &ResponseUserDto{
+		FirstName: r.FirstName,
+		LastName:  r.LastName,
+		Username:  r.Username,
+		IsPublic:  r.IsPublic,
 	}
 }

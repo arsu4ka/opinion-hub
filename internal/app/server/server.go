@@ -22,17 +22,25 @@ func New(config *configs.ServerConfig) *Server {
 
 func (s *Server) init(db *gorm.DB) {
 	userRepo := repositories.NewGormUserRepository(db)
+	opinionRepo := repositories.NewGormOpinionRepository(db)
 
 	userService := services.NewUserService(userRepo)
+	opinionService := services.NewOpinionService(opinionRepo)
 
 	authController := controllers.NewAuthController(userService)
+	userController := controllers.NewUserController(userService, opinionService)
 
 	s.e.Use(middleware.Recover())
 	s.e.Use(middleware.CORS())
 	s.e.Use(middleware.Logger())
 
 	authGroup := s.e.Group("/auth")
-	authGroup.POST("/signup", authController.SignUp())
+	authGroup.POST("/register", authController.Register())
+	authGroup.POST("/login", authController.Login(s.config.TokenSecret, s.config.TokenExpiration))
+
+	userGroup := s.e.Group("/users")
+	userGroup.GET("/:username", userController.GetUser())
+	userGroup.GET("/:username/opinions", userController.GetOpinions())
 }
 
 func (s *Server) Start() error {
