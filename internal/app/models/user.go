@@ -1,8 +1,9 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
@@ -33,6 +34,10 @@ type User struct {
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
 	return u.HashPassword()
+}
+
+func (u *User) SetHashed() {
+	u.isHashedPassword = true
 }
 
 func (u *User) Validate() error {
