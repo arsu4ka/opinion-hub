@@ -42,3 +42,7 @@ func (us *UserService) Update(user *models.User) error {
 
 	return us.repo.Update(user)
 }
+
+func (us *UserService) CheckAvailability(username, email string) error {
+	return us.repo.CheckAvailability(username, email)
+}
