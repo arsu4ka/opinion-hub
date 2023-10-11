@@ -33,8 +33,9 @@ func (us *UserService) Create(userDto *dto.CreateUserDto) error {
 	return us.repo.Create(user)
 }
 
-func (us *UserService) Update(userDto *dto.UpdateUserDto) error {
+func (us *UserService) Update(id uint, userDto *dto.UpdateUserDto) error {
 	user := userDto.ToModel()
+	user.ID = id
 	return us.repo.Update(user)
 }
 
