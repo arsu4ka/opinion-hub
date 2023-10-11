@@ -19,7 +19,7 @@ func (r *GormLikeRepository) Create(like *models.Like) error {
 }
 
 func (r *GormLikeRepository) Delete(id uuid.UUID) error {
-	return r.db.Delete(&models.Like{ID: id}).Error
+	return r.db.Delete(&models.Like{}, id).Error
 }
 
 func (r *GormLikeRepository) GetOpinionLikes(opinionId uuid.UUID) (int64, error) {
