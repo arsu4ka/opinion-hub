@@ -5,6 +5,7 @@ import (
 	"github.com/aru4ka/opinion-hub/internal/app/controllers"
 	"github.com/aru4ka/opinion-hub/internal/app/models"
 	"github.com/aru4ka/opinion-hub/internal/app/repositories"
+	"github.com/aru4ka/opinion-hub/internal/app/routes"
 	"github.com/aru4ka/opinion-hub/internal/app/services"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -34,14 +35,11 @@ func (s *Server) init(db *gorm.DB) {
 	s.e.Use(middleware.CORS())
 	s.e.Use(middleware.Logger())
 
-	authGroup := s.e.Group("/auth")
-	authGroup.POST("/register", authController.Register())
-	authGroup.POST("/login", authController.Login())
-
-	userGroup := s.e.Group("/users")
-	userGroup.GET("/:username", userController.GetUser())
-	userGroup.GET("/:username/opinions", userController.GetOpinions())
-	userGroup.PUT("/:username", userController.UpdateUser())
+	router := routes.GlobalRouter{
+		AuthController: authController,
+		UserController: userController,
+	}
+	router.BindTo(s.e)
 }
 
 func (s *Server) Start() error {
