@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/aru4ka/opinion-hub/internal/app/configs"
 	"net/http"
 
 	"github.com/aru4ka/opinion-hub/internal/app/controllers/dto"
@@ -12,11 +13,12 @@ import (
 
 type AuthController struct {
 	user     *services.UserService
+	jwtConf  *configs.JwtConfig
 	validate *validator.Validate
 }
 
-func NewAuthController(userService *services.UserService) *AuthController {
-	return &AuthController{user: userService, validate: validator.New()}
+func NewAuthController(userService *services.UserService, jwtConf *configs.JwtConfig) *AuthController {
+	return &AuthController{user: userService, jwtConf: jwtConf, validate: validator.New()}
 }
 
 func (ac *AuthController) Register() echo.HandlerFunc {
@@ -42,7 +44,7 @@ func (ac *AuthController) Register() echo.HandlerFunc {
 	}
 }
 
-func (ac *AuthController) Login(tokenSecret string, expirationHours int) echo.HandlerFunc {
+func (ac *AuthController) Login() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var loginUserDto dto.LoginUserDto
 		if err := c.Bind(&loginUserDto); err != nil {
@@ -58,7 +60,7 @@ func (ac *AuthController) Login(tokenSecret string, expirationHours int) echo.Ha
 			return c.JSON(http.StatusUnauthorized, "invalid credentials")
 		}
 
-		token, err := utils.GenerateJWT(tokenSecret, expirationHours, user.ID)
+		token, err := utils.GenerateJWT(user.ID, ac.jwtConf)
 		if err != nil {
 			return err
 		}

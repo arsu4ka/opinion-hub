@@ -3,6 +3,7 @@ package configs
 import (
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/aru4ka/opinion-hub/internal/app/dbs"
 	"github.com/joho/godotenv"
@@ -15,14 +16,13 @@ type DBInitializer interface {
 }
 
 type ServerConfig struct {
-	Port            string
-	BaseURL         string
-	SMTPEmail       string
-	SMTPPassword    string
-	TokenSecret     string
-	TokenExpiration int
+	Port         string
+	BaseURL      string
+	SMTPEmail    string
+	SMTPPassword string
 
-	Db DBInitializer
+	Jwt *JwtConfig
+	Db  DBInitializer
 }
 
 func NewServerConfig(loadEnv bool, dbInitializer DBInitializer) (*ServerConfig, error) {
@@ -39,13 +39,15 @@ func NewServerConfig(loadEnv bool, dbInitializer DBInitializer) (*ServerConfig, 
 	}
 
 	return &ServerConfig{
-		Port:            os.Getenv("PORT"),
-		BaseURL:         os.Getenv("URL"),
-		SMTPEmail:       os.Getenv("SMTP_EMAIL"),
-		SMTPPassword:    os.Getenv("SMTP_PASSWORD"),
-		TokenSecret:     os.Getenv("TOKEN_SECRET"),
-		TokenExpiration: tokenExpiration,
-		Db:              dbInitializer,
+		Port:         os.Getenv("PORT"),
+		BaseURL:      os.Getenv("URL"),
+		SMTPEmail:    os.Getenv("SMTP_EMAIL"),
+		SMTPPassword: os.Getenv("SMTP_PASSWORD"),
+		Jwt: &JwtConfig{
+			Secret:       os.Getenv("TOKEN_SECRET"),
+			TimeToExpire: time.Hour * time.Duration(tokenExpiration),
+		},
+		Db: dbInitializer,
 	}, nil
 }
 

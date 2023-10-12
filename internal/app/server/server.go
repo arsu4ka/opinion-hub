@@ -27,7 +27,7 @@ func (s *Server) init(db *gorm.DB) {
 	userService := services.NewUserService(userRepo)
 	opinionService := services.NewOpinionService(opinionRepo)
 
-	authController := controllers.NewAuthController(userService)
+	authController := controllers.NewAuthController(userService, s.config.Jwt)
 	userController := controllers.NewUserController(userService, opinionService)
 
 	s.e.Use(middleware.Recover())
@@ -36,7 +36,7 @@ func (s *Server) init(db *gorm.DB) {
 
 	authGroup := s.e.Group("/auth")
 	authGroup.POST("/register", authController.Register())
-	authGroup.POST("/login", authController.Login(s.config.TokenSecret, s.config.TokenExpiration))
+	authGroup.POST("/login", authController.Login())
 
 	userGroup := s.e.Group("/users")
 	userGroup.GET("/:username", userController.GetUser())
