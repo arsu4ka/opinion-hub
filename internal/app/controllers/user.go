@@ -82,7 +82,7 @@ func (uc *UserController) UpdateUser() echo.HandlerFunc {
 			return err
 		}
 
-		return c.JSON(http.StatusOK, nil)
+		return c.NoContent(http.StatusOK)
 	}
 }
 

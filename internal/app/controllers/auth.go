@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"github.com/aru4ka/opinion-hub/internal/app/configs"
 	"net/http"
+
+	"github.com/aru4ka/opinion-hub/internal/app/configs"
 
 	"github.com/aru4ka/opinion-hub/internal/app/controllers/dto"
 	"github.com/aru4ka/opinion-hub/internal/app/services"
@@ -40,7 +41,7 @@ func (ac *AuthController) Register() echo.HandlerFunc {
 			return err
 		}
 
-		return c.JSON(http.StatusCreated, nil)
+		return c.NoContent(http.StatusCreated)
 	}
 }
 
