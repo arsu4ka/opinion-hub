@@ -16,11 +16,12 @@ import (
 
 type OpinionController struct {
 	opinion  *services.OpinionService
+	user     *services.UserService
 	validate *validator.Validate
 }
 
-func NewOpinionController(opinionService *services.OpinionService) *OpinionController {
-	return &OpinionController{opinion: opinionService, validate: validator.New()}
+func NewOpinionController(opinionService *services.OpinionService, userService *services.UserService) *OpinionController {
+	return &OpinionController{opinion: opinionService, user: userService, validate: validator.New()}
 }
 
 func (oc *OpinionController) Create() echo.HandlerFunc {
@@ -81,5 +82,35 @@ func (oc *OpinionController) Update() echo.HandlerFunc {
 		}
 
 		return c.NoContent(http.StatusOK)
+	}
+}
+
+func (oc *OpinionController) GetUserOpinions() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		username := c.Param("username")
+
+		user, err := oc.user.FindByUsername(username)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return echo.ErrNotFound
+			}
+			return err
+		}
+
+		if !user.IsPublic {
+			return c.NoContent(http.StatusForbidden)
+		}
+
+		opinions, err := oc.opinion.FindByUserID(user.ID, false)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
+
+		opinionsDto := make([]*dto.ResponseOpinionDto, len(opinions))
+		for i, op := range opinions {
+			opinionsDto[i] = dto.NewResponseOpinionDto(op)
+		}
+
+		return c.JSON(http.StatusOK, opinionsDto)
 	}
 }

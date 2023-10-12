@@ -18,7 +18,7 @@ func (g *GlobalRouter) BindTo(base *echo.Echo) {
 
 	userGroup := base.Group("/users")
 	userGroup.GET("/:username", g.UserController.GetUser())
-	userGroup.GET("/:username/opinions", g.UserController.GetOpinions())
+	userGroup.GET("/:username/opinions", g.OpinionController.GetUserOpinions())
 	userGroup.PUT("/:username", g.UserController.UpdateUser())
 
 	opinionGroup := base.Group("/opinions")

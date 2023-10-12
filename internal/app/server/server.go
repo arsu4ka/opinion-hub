@@ -29,8 +29,8 @@ func (s *Server) init(db *gorm.DB) {
 	opinionService := services.NewOpinionService(opinionRepo)
 
 	authController := controllers.NewAuthController(userService, s.config.Jwt)
-	userController := controllers.NewUserController(userService, opinionService)
-	opinionController := controllers.NewOpinionController(opinionService)
+	userController := controllers.NewUserController(userService)
+	opinionController := controllers.NewOpinionController(opinionService, userService)
 
 	s.e.Use(middleware.Recover())
 	s.e.Use(middleware.CORS())

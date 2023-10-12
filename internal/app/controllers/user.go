@@ -15,14 +15,12 @@ import (
 
 type UserController struct {
 	user     *services.UserService
-	opinion  *services.OpinionService
 	validate *validator.Validate
 }
 
-func NewUserController(userService *services.UserService, opinionService *services.OpinionService) *UserController {
+func NewUserController(userService *services.UserService) *UserController {
 	return &UserController{
 		user:     userService,
-		opinion:  opinionService,
 		validate: validator.New(),
 	}
 }
@@ -83,35 +81,5 @@ func (uc *UserController) UpdateUser() echo.HandlerFunc {
 		}
 
 		return c.NoContent(http.StatusOK)
-	}
-}
-
-func (uc *UserController) GetOpinions() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		username := c.Param("username")
-
-		user, err := uc.user.FindByUsername(username)
-		if err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return echo.ErrNotFound
-			}
-			return err
-		}
-
-		if !user.IsPublic {
-			return c.JSON(http.StatusForbidden, []*dto.ResponseOpinionDto{})
-		}
-
-		opinions, err := uc.opinion.FindByUserID(user.ID, false)
-		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-			return err
-		}
-
-		opinionsDto := make([]*dto.ResponseOpinionDto, len(opinions))
-		for i, op := range opinions {
-			opinionsDto[i] = dto.NewResponseOpinionDto(op)
-		}
-
-		return c.JSON(http.StatusOK, opinionsDto)
 	}
 }
