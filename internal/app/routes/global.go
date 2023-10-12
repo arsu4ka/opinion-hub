@@ -9,6 +9,7 @@ type GlobalRouter struct {
 	AuthController    *controllers.AuthController
 	UserController    *controllers.UserController
 	OpinionController *controllers.OpinionController
+	LikeController    *controllers.LikeController
 }
 
 func (g *GlobalRouter) BindTo(base *echo.Echo) {
@@ -26,4 +27,7 @@ func (g *GlobalRouter) BindTo(base *echo.Echo) {
 	opinionGroup.PUT("/:id", g.OpinionController.Update())
 	opinionGroup.GET("/:id", g.OpinionController.GetOpinion())
 	opinionGroup.DELETE("/:id", g.OpinionController.Delete())
+
+	likeGroup := base.Group("/likes")
+	likeGroup.POST("/:id", g.LikeController.Create())
 }

@@ -24,13 +24,16 @@ func New(config *configs.ServerConfig) *Server {
 func (s *Server) init(db *gorm.DB) {
 	userRepo := repositories.NewGormUserRepository(db)
 	opinionRepo := repositories.NewGormOpinionRepository(db)
+	likeRepo := repositories.NewGormLikeRepository(db)
 
 	userService := services.NewUserService(userRepo)
 	opinionService := services.NewOpinionService(opinionRepo)
+	likeService := services.NewLikeService(likeRepo)
 
 	authController := controllers.NewAuthController(userService, s.config.Jwt)
 	userController := controllers.NewUserController(userService)
 	opinionController := controllers.NewOpinionController(opinionService, userService)
+	likeController := controllers.NewLikeController(likeService, opinionService)
 
 	s.e.Use(middleware.Recover())
 	s.e.Use(middleware.CORS())
@@ -40,6 +43,7 @@ func (s *Server) init(db *gorm.DB) {
 		AuthController:    authController,
 		UserController:    userController,
 		OpinionController: opinionController,
+		LikeController:    likeController,
 	}
 	router.BindTo(s.e)
 }
