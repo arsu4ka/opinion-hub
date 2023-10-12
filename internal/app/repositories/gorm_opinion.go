@@ -16,13 +16,13 @@ func NewGormOpinionRepository(db *gorm.DB) *GormOpinionRepository {
 	}
 }
 
-func (os *GormOpinionRepository) FindByID(id uuid.UUID) (*models.Opinion, error) {
+func (os *GormOpinionRepository) FindById(id uuid.UUID) (*models.Opinion, error) {
 	var opinion models.Opinion
 	result := os.db.Where("id = ?", id).First(&opinion)
 	return &opinion, result.Error
 }
 
-func (os *GormOpinionRepository) FindByUserID(userID uint, withDrafts bool) ([]*models.Opinion, error) {
+func (os *GormOpinionRepository) FindByUserId(userID uint, withDrafts bool) ([]*models.Opinion, error) {
 	var opinions []*models.Opinion
 	query := "owner_id = ?"
 	if !withDrafts {
