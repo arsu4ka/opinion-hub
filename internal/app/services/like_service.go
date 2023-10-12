@@ -10,6 +10,10 @@ type LikeService struct {
 	repo repositories.ILikeRepository
 }
 
+func NewLikeService(repo repositories.ILikeRepository) *LikeService {
+	return &LikeService{repo: repo}
+}
+
 func (ls *LikeService) Create(userId uint, opinionId uuid.UUID) error {
 	like := &models.Like{
 		ID:        uuid.New(),
