@@ -3,3 +3,5 @@ bin/main
 
 .idea/
 .env
+
+**/DS_Store
