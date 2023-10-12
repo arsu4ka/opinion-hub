@@ -6,8 +6,9 @@ import (
 )
 
 type GlobalRouter struct {
-	AuthController *controllers.AuthController
-	UserController *controllers.UserController
+	AuthController    *controllers.AuthController
+	UserController    *controllers.UserController
+	OpinionController *controllers.OpinionController
 }
 
 func (g *GlobalRouter) BindTo(base *echo.Echo) {
@@ -19,4 +20,8 @@ func (g *GlobalRouter) BindTo(base *echo.Echo) {
 	userGroup.GET("/:username", g.UserController.GetUser())
 	userGroup.GET("/:username/opinions", g.UserController.GetOpinions())
 	userGroup.PUT("/:username", g.UserController.UpdateUser())
+
+	opinionGroup := base.Group("/opinions")
+	opinionGroup.POST("", g.OpinionController.Create())
+	opinionGroup.PUT("/:id", g.OpinionController.Update())
 }

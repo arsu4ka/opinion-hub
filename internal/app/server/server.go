@@ -30,14 +30,16 @@ func (s *Server) init(db *gorm.DB) {
 
 	authController := controllers.NewAuthController(userService, s.config.Jwt)
 	userController := controllers.NewUserController(userService, opinionService)
+	opinionController := controllers.NewOpinionController(opinionService)
 
 	s.e.Use(middleware.Recover())
 	s.e.Use(middleware.CORS())
 	s.e.Use(middleware.Logger())
 
 	router := routes.GlobalRouter{
-		AuthController: authController,
-		UserController: userController,
+		AuthController:    authController,
+		UserController:    userController,
+		OpinionController: opinionController,
 	}
 	router.BindTo(s.e)
 }
