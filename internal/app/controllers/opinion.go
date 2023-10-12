@@ -65,7 +65,7 @@ func (oc *OpinionController) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		opinion, err := oc.opinion.FindByID(id)
+		opinion, err := oc.opinion.FindById(id)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return c.NoContent(http.StatusNotFound)
@@ -101,7 +101,7 @@ func (oc *OpinionController) GetUserOpinions() echo.HandlerFunc {
 			return c.NoContent(http.StatusForbidden)
 		}
 
-		opinions, err := oc.opinion.FindByUserID(user.ID, false)
+		opinions, err := oc.opinion.FindByUserId(user.ID, false)
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
@@ -112,5 +112,33 @@ func (oc *OpinionController) GetUserOpinions() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, opinionsDto)
+	}
+}
+
+func (oc *OpinionController) GetOpinion() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		opId, err := uuid.Parse(c.Param("id"))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		opinion, err := oc.opinion.FindById(opId)
+		if err != nil || opinion.IsDraft {
+			if errors.Is(err, gorm.ErrRecordNotFound) || opinion.IsDraft {
+				return echo.ErrNotFound
+			}
+			return err
+		}
+
+		owner, err := oc.user.FindById(opinion.OwnerID)
+		if err != nil {
+			return err
+		}
+
+		if !owner.IsPublic {
+			return c.NoContent(http.StatusForbidden)
+		}
+
+		return c.JSON(http.StatusOK, dto.NewResponseOpinionDto(opinion))
 	}
 }

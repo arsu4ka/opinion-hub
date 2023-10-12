@@ -24,4 +24,5 @@ func (g *GlobalRouter) BindTo(base *echo.Echo) {
 	opinionGroup := base.Group("/opinions")
 	opinionGroup.POST("", g.OpinionController.Create())
 	opinionGroup.PUT("/:id", g.OpinionController.Update())
+	opinionGroup.GET("/:id", g.OpinionController.GetOpinion())
 }
