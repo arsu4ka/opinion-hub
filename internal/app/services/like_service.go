@@ -10,11 +10,12 @@ type LikeService struct {
 	repo repositories.ILikeRepository
 }
 
-func (ls *LikeService) Create(like *models.Like) error {
-	if err := like.Validate(); err != nil {
-		return err
+func (ls *LikeService) Create(userId uint, opinionId uuid.UUID) error {
+	like := &models.Like{
+		ID:        uuid.New(),
+		UserID:    userId,
+		OpinionID: opinionId,
 	}
-
 	return ls.repo.Create(like)
 }
 
