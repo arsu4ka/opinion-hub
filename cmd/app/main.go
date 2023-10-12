@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	config, err := configs.NewPostgresServerConfig(true)
+	config, err := configs.NewPostgresServerConfig(false)
 	if err != nil {
 		panic(err)
 	}
