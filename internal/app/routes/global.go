@@ -25,4 +25,5 @@ func (g *GlobalRouter) BindTo(base *echo.Echo) {
 	opinionGroup.POST("", g.OpinionController.Create())
 	opinionGroup.PUT("/:id", g.OpinionController.Update())
 	opinionGroup.GET("/:id", g.OpinionController.GetOpinion())
+	opinionGroup.DELETE("/:id", g.OpinionController.Delete())
 }

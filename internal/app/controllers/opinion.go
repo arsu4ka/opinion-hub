@@ -142,3 +142,33 @@ func (oc *OpinionController) GetOpinion() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, dto.NewResponseOpinionDto(opinion))
 	}
 }
+
+func (oc *OpinionController) Delete() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		token := c.Get("user").(*jwt.Token)
+		claims := token.Claims.(*utils.JwtCustomClaims)
+
+		opId, err := uuid.Parse(c.Param("id"))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		opinion, err := oc.opinion.FindById(opId)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return echo.ErrNotFound
+			}
+			return err
+		}
+
+		if opinion.OwnerID != claims.UserId {
+			return c.NoContent(http.StatusForbidden)
+		}
+
+		if err := oc.opinion.Delete(opId); err != nil {
+			return err
+		}
+
+		return c.NoContent(http.StatusOK)
+	}
+}
