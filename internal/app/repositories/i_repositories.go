@@ -6,7 +6,7 @@ import (
 )
 
 type IUserRepository interface {
-	FindByID(id uint) (*models.User, error)
+	FindById(id uint) (*models.User, error)
 	FindByEmail(email string) (*models.User, error)
 	FindByUsername(username string) (*models.User, error)
 	Create(user *models.User) error
@@ -15,8 +15,8 @@ type IUserRepository interface {
 }
 
 type IOpinionRepository interface {
-	FindByID(id uuid.UUID) (*models.Opinion, error)
-	FindByUserID(userID uint, withDrafts bool) ([]*models.Opinion, error)
+	FindById(id uuid.UUID) (*models.Opinion, error)
+	FindByUserId(userID uint, withDrafts bool) ([]*models.Opinion, error)
 	Create(opinion *models.Opinion) error
 	Update(opinion *models.Opinion) error
 	Delete(id uuid.UUID) error

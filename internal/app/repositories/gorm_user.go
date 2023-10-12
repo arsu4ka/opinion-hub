@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+
 	"github.com/aru4ka/opinion-hub/internal/app/models"
 	"gorm.io/gorm"
 )
@@ -16,7 +17,7 @@ func NewGormUserRepository(db *gorm.DB) *GormUserRepository {
 	}
 }
 
-func (us *GormUserRepository) FindByID(id uint) (*models.User, error) {
+func (us *GormUserRepository) FindById(id uint) (*models.User, error) {
 	var user models.User
 	result := us.db.Where("id = ?", id).First(&user)
 	return &user, result.Error

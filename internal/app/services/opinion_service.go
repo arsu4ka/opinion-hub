@@ -15,12 +15,12 @@ func NewOpinionService(repo repositories.IOpinionRepository) *OpinionService {
 	return &OpinionService{repo: repo}
 }
 
-func (os *OpinionService) FindByID(id uuid.UUID) (*models.Opinion, error) {
-	return os.repo.FindByID(id)
+func (os *OpinionService) FindById(id uuid.UUID) (*models.Opinion, error) {
+	return os.repo.FindById(id)
 }
 
-func (os *OpinionService) FindByUserID(userID uint, withDrafts bool) ([]*models.Opinion, error) {
-	return os.repo.FindByUserID(userID, withDrafts)
+func (os *OpinionService) FindByUserId(userID uint, withDrafts bool) ([]*models.Opinion, error) {
+	return os.repo.FindByUserId(userID, withDrafts)
 }
 
 func (os *OpinionService) Create(ownerId uint, opDto *dto.CreateOpinionDto) error {

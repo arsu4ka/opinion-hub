@@ -17,7 +17,7 @@ func NewUserService(repo repositories.IUserRepository) *UserService {
 }
 
 func (us *UserService) FindById(id uint) (*models.User, error) {
-	return us.repo.FindByID(id)
+	return us.repo.FindById(id)
 }
 
 func (us *UserService) FindByEmail(email string) (*models.User, error) {
