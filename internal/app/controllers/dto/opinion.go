@@ -6,17 +6,17 @@ import (
 )
 
 type CreateOpinionDto struct {
-	Title   string `json:"title" xml:"title"`
+	Title   string `json:"title" xml:"title" validate:"required,min=3,max=255"`
 	Body    string `json:"body" xml:"body"`
-	IsDraft bool   `json:"isDraft" xml:"isDraft"`
+	IsDraft bool   `json:"isDraft" xml:"isDraft" validate:"required"`
 }
 
-func (od *CreateOpinionDto) ToModel() *models.Opinion {
+func (od *CreateOpinionDto) ToModel(ownerId uint) *models.Opinion {
 	return &models.Opinion{
-		ID:      uuid.New(),
 		Title:   od.Title,
 		Body:    od.Body,
 		IsDraft: od.IsDraft,
+		OwnerID: ownerId,
 	}
 }
 

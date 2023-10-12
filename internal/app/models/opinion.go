@@ -1,10 +1,10 @@
 package models
 
 import (
-	"errors"
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"time"
 )
 
 type Opinion struct {
@@ -19,14 +19,6 @@ type Opinion struct {
 
 	OwnerID uint
 	Owner   User `gorm:"foreignKey:OwnerID"`
-}
-
-func (o *Opinion) Validate() error {
-	if o.Title == "" {
-		return errors.New("opinion title is required")
-	}
-
-	return nil
 }
 
 func (o *Opinion) BeforeCreate(tx *gorm.DB) error {

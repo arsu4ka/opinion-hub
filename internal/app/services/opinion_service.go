@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/aru4ka/opinion-hub/internal/app/controllers/dto"
 	"github.com/aru4ka/opinion-hub/internal/app/models"
 	"github.com/aru4ka/opinion-hub/internal/app/repositories"
 	"github.com/google/uuid"
@@ -22,19 +23,14 @@ func (os *OpinionService) FindByUserID(userID uint, withDrafts bool) ([]*models.
 	return os.repo.FindByUserID(userID, withDrafts)
 }
 
-func (os *OpinionService) Create(opinion *models.Opinion) error {
-	if err := opinion.Validate(); err != nil {
-		return err
-	}
-
+func (os *OpinionService) Create(ownerId uint, opDto *dto.CreateOpinionDto) error {
+	opinion := opDto.ToModel(ownerId)
 	return os.repo.Create(opinion)
 }
 
-func (os *OpinionService) Update(opinion *models.Opinion) error {
-	if err := opinion.Validate(); err != nil {
-		return err
-	}
-
+func (os *OpinionService) Update(id uuid.UUID, ownderId uint, opDto *dto.UpdateOpinionDto) error {
+	opinion := opDto.ToModel(ownderId)
+	opinion.ID = id
 	return os.repo.Update(opinion)
 }
 
